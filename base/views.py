@@ -8,5 +8,12 @@ def getRoutes(request):
         '/api/products/',
         '/api/products/create/',
         '/api/products/upload/',
+        '/api/products/<id>/reviews/',
+        
+        '/api/products/top/',
+        '/api/products/<id>/',
+        
+        '/api/products/delete/<id>/',
+        '/api/products/<update>/<id>/',
     ]
     return JsonResponse('Hello Brooks', safe=False)
