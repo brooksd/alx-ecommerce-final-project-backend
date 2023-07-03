@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from .products import products
 
 # Create your views here.
 
@@ -16,4 +17,7 @@ def getRoutes(request):
         '/api/products/delete/<id>/',
         '/api/products/<update>/<id>/',
     ]
-    return JsonResponse('Hello Brooks', safe=False)
+    return JsonResponse(routes , safe=False)
+
+def getProducts():
+    return JsonResponse( products, safe=False)
