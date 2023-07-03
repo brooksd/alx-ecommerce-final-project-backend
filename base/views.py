@@ -24,3 +24,13 @@ def getRoutes(request):
 @api_view(['GET'])
 def getProducts(request):
     return Response( products)
+
+@api_view(['GET'])
+def getProduct(request, pk):
+    product = None
+    #loops through products for dynamic assignment of matching '_id'
+    for i in products:
+        if i['_id'] == pk:
+            product = i
+            break
+    return Response( products )
