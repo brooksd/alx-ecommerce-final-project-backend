@@ -126,6 +126,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/images/'
+
+#Directs Django to existence static folder
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+#Media Route for Images
+MEDIA_ROOT = 'static/images'
 
 # allows all requests to reach Django
 CORS_ALLOW_ALL_ORIGINS = True
