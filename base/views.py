@@ -7,6 +7,9 @@ from .models import Product
 from .serializers import ProductSerializer
 from .products import products
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 
 # Create your views here.
 @api_view(['GET'])
