@@ -1,15 +1,14 @@
-from django.shortcuts import render
+from django.contrib.auth.models import User, update_last_login
+from django.contrib.auth.hashers import make_password
+from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
-from django.contrib.auth.models import User
-from base.serializers import ProductSerializer, UserSerializer, UserSerializerWithToken
-# Create your views here.
+from base.serializers import ProductSerializer, UserSerializer, UserSerializersWithToken
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
-from django.contrib.auth.hashers import make_password
 from rest_framework import status
 
 
@@ -17,9 +16,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        serializer = UserSerializerWithToken(self.user).data
-        for k, v in serializer.items():
-            data[k] = v
+        serializer = UserSerializersWithToken(self.user).data
+
+        for key, value in serializer.items():
+            data[key] = value
 
         return data
 
@@ -31,6 +31,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 @api_view(['POST'])
 def registerUser(request):
     data = request.data
+
     try:
         user = User.objects.create(
             first_name=data['name'],
@@ -38,9 +39,9 @@ def registerUser(request):
             email=data['email'],
             password=make_password(data['password'])
         )
-
-        serializer = UserSerializerWithToken(user, many=False)
+        serializer = UserSerializersWithToken(user, many=False)
         return Response(serializer.data)
+
     except:
         message = {'detail': 'User with this email already exists'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
@@ -50,11 +51,10 @@ def registerUser(request):
 @permission_classes([IsAuthenticated])
 def updateUserProfile(request):
     user = request.user
-    serializer = UserSerializerWithToken(user, many=False)
+    serializer = UserSerializersWithToken(user, many=False)
 
     data = request.data
     user.first_name = data['name']
-    user.username = data['email']
     user.email = data['email']
 
     if data['password'] != '':
@@ -93,17 +93,14 @@ def getUserById(request, pk):
 @permission_classes([IsAuthenticated])
 def updateUser(request, pk):
     user = User.objects.get(id=pk)
+    serializer = UserSerializer(user, many=False)
 
     data = request.data
-
     user.first_name = data['name']
-    user.username = data['email']
     user.email = data['email']
     user.is_staff = data['isAdmin']
 
     user.save()
-
-    serializer = UserSerializer(user, many=False)
 
     return Response(serializer.data)
 
